@@ -3,195 +3,139 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>探索 Virtual Sky — 导航页面</title>
-  <meta name="description" content="一页式美观导航，带动画星空背景，直达 virtual-sky.online" />
+  <title>虚拟天空 — 梦幻入口</title>
   <style>
-    :root{
-      --bg1:#0f1724; /* near-black navy */
-      --bg2:#071228; /* deep navy */
-      --accent1:#7ee7c5; /* mint */
-      --accent2:#8ad1ff; /* light blue */
-      --glass: rgba(255,255,255,0.06);
-      --glass-2: rgba(255,255,255,0.04);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{margin:0;padding:0;box-sizing:border-box;}
     body{
-      margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(138,209,255,0.06), transparent), linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 100%);
-      color:#e6f3ff;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-family:"Poppins",sans-serif;
       overflow:hidden;
+      background: radial-gradient(circle at top, #5033ff, #251c4a 60%, #120b24 100%);
+      position:relative;
     }
 
-    /* star field */
-    .stars, .stars2, .twinkle{
-      position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0;
-      background-repeat:repeat;
-      -webkit-transform:translateZ(0);
-      transform:translateZ(0);
+    /* —— 动态星云背景 —— */
+    .nebula{
+      position:absolute;
+      width:200%;
+      height:200%;
+      background:radial-gradient(circle, rgba(255,120,255,0.25), transparent 70%),
+                 radial-gradient(circle, rgba(120,200,255,0.2), transparent 70%),
+                 radial-gradient(circle, rgba(255,180,120,0.2), transparent 70%);
+      animation: nebulaMove 20s ease-in-out infinite alternate;
+      filter: blur(120px);
     }
-    .stars  {background-image:radial-gradient(#ffffff22 1px, transparent 1px); background-size: 2px 2px; opacity:0.9; animation: drift 120s linear infinite;}
-    .stars2 {background-image:radial-gradient(#ffffff11 1px, transparent 1px); background-size: 4px 4px; opacity:0.6; animation: drift 240s linear infinite reverse;}
-    .twinkle{background-image:radial-gradient(#ffffff44 0.6px, transparent 0.6px); background-size: 40px 40px; mix-blend-mode: screen; animation: twink 6s linear infinite;}
-
-    @keyframes drift{from{transform:translate(0,0)} to{transform:translate(-2000px,1200px)}}
-    @keyframes twink{0%{opacity:0.25}50%{opacity:1}100%{opacity:0.25}}
-
-    /* shooting star */
-    .shoot{position:absolute; top:12%; left:10%; width:160px; height:2px; transform:rotate(-25deg); opacity:0; filter:brightness(1.6);}
-    .shoot::before{content:""; position:absolute; right:0; width:100%; height:2px; background:linear-gradient(90deg, transparent, #ffffffcc, transparent); box-shadow:0 0 8px 3px #ffffff33;}
-    .shoot::after{content:""; position:absolute; right:0; width:6px; height:6px; border-radius:50%; background:#ffffff; box-shadow:0 0 8px 2px #ffffff55;}
-    @keyframes shootAnim{0%{opacity:0; transform:translateX(0) rotate(-25deg) scaleX(0.2)} 10%{opacity:1} 100%{opacity:0; transform:translateX(-1200px) rotate(-25deg) scaleX(1)}}
-
-    /* layout */
-    .wrap{
-      position:relative; z-index:2; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 24px;
+    @keyframes nebulaMove{
+      0%{transform:translate(-10%, -10%) scale(1);}
+      100%{transform:translate(10%, 10%) scale(1.2);}
     }
 
+    /* —— 星空粒子（缓慢下落） —— */
+    .particle{
+      position:absolute;
+      width:3px;
+      height:3px;
+      background:white;
+      border-radius:50%;
+      opacity:0.8;
+      animation: fall linear infinite;
+    }
+    @keyframes fall{
+      0%{transform:translateY(-10vh); opacity:0.5;}
+      100%{transform:translateY(110vh); opacity:0.9;}
+    }
+
+    /* —— 流星 —— */
+    .meteor{
+      position:absolute;
+      width:2px;
+      height:100px;
+      background:linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,0));
+      transform:rotate(45deg);
+      opacity:0.7;
+      animation: meteor 6s linear infinite;
+    }
+    @keyframes meteor{
+      0%{transform:translate(-20vw,-20vh) rotate(45deg); opacity:0;}
+      10%{opacity:1;}
+      100%{transform:translate(50vw,50vh) rotate(45deg); opacity:0;}
+    }
+
+    /* —— 玻璃卡片 —— */
     .card{
-      max-width:980px; width:100%; display:grid; grid-template-columns:1fr 420px; gap:28px; align-items:center;
-      backdrop-filter: blur(8px) saturate(120%);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:18px; padding:28px; box-shadow: 0 10px 40px rgba(2,6,23,0.6); border: 1px solid rgba(255,255,255,0.04);
+      z-index:10;
+      background:rgba(255,255,255,0.08);
+      padding:50px 70px;
+      border-radius:25px;
+      backdrop-filter:blur(20px);
+      border:1px solid rgba(255,255,255,0.2);
+      text-align:center;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float{
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(-12px);}
     }
 
-    .left{
-      padding:14px 22px;
-    }
-    h1{margin:0 0 10px 0; font-size:clamp(22px,4.6vw,36px); line-height:1.02; letter-spacing:-0.02em}
-    p.lead{margin:0 0 16px 0; color:#cfeeff; opacity:0.9}
-    .features{display:flex; gap:12px; flex-wrap:wrap}
-    .chip{background:var(--glass); padding:8px 12px; border-radius:999px; font-weight:600; font-size:13px}
-
-    /* right preview */
-    .right{
-      display:flex; align-items:center; justify-content:center; position:relative; padding:18px; min-height:220px;
-    }
-    .preview{
-      width:100%; height:100%; border-radius:12px; overflow:hidden; position:relative; background:linear-gradient(180deg,#071026 0%, #081226 100%);
-      border:1px solid rgba(255,255,255,0.03);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(2,6,23,0.6);
-      display:flex; flex-direction:column; align-items:center; justify-content:center; padding:22px;
-    }
-    .planet{
-      width:170px; height:170px; border-radius:50%; background: radial-gradient(circle at 30% 30%, #8ad1ff55 0%, #7ee7c522 30%, transparent 40%), linear-gradient(150deg,#153c6b, #052035); display:flex; align-items:center; justify-content:center; box-shadow: 0 10px 30px rgba(12,28,44,0.6), inset 0 -12px 30px rgba(0,0,0,0.3);
-      transform:translateY(0); animation: float 6s ease-in-out infinite;
-    }
-    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
-
-    .cta{
-      display:inline-flex; gap:12px; align-items:center; justify-content:center; padding:14px 20px; border-radius:999px; text-decoration:none; font-weight:700; font-size:16px;
-      background: linear-gradient(90deg,var(--accent1), var(--accent2)); color:#012029; box-shadow: 0 8px 30px rgba(46,225,190,0.12), 0 2px 0 rgba(255,255,255,0.03);
-      transition: transform .18s ease, box-shadow .18s ease; border: none;
-    }
-    .cta:hover{transform:translateY(-6px); box-shadow: 0 18px 50px rgba(46,225,190,0.12)}
-
-    .secondary{
-      display:inline-block; padding:10px 14px; border-radius:12px; background:var(--glass-2); color:#bfeaff; font-weight:600; text-decoration:none; border:1px solid rgba(255,255,255,0.02)
+    h1{
+      color:#ffffff;
+      font-size:40px;
+      font-weight:600;
+      margin-bottom:25px;
+      letter-spacing:1px;
     }
 
-    footer{position:relative; z-index:3; margin-top:16px; width:100%; grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; color:#93c8ff66; font-size:13px}
-
-    /* responsive */
-    @media (max-width:880px){
-      .card{grid-template-columns:1fr; padding:18px; gap:18px}
-      .right{order:-1}
+    .btn{
+      display:inline-block;
+      padding:16px 36px;
+      border-radius:999px;
+      text-decoration:none;
+      color:white;
+      font-size:20px;
+      background:linear-gradient(135deg, #ff70f5, #7b87ff);
+      box-shadow:0 10px 30px rgba(0,0,0,0.3);
+      transition:0.3s;
+    }
+    .btn:hover{
+      transform:scale(1.08);
+      box-shadow:0 15px 40px rgba(0,0,0,0.45);
     }
   </style>
 </head>
 <body>
-  <div class="stars"></div>
-  <div class="stars2"></div>
-  <div class="twinkle"></div>
-  <div class="shoot" id="shoot1"></div>
-  <div class="shoot" id="shoot2" style="top:70%; left:85%; animation-delay:2s"></div>
 
-  <div class="wrap">
-    <main class="card" role="main" aria-labelledby="title">
-      <section class="left">
-        <h1 id="title">进入虚拟天空 — 听故事 · 学知识</h1>
-        <p class="lead">一个专注于故事聆听与知识学习的沉浸式平台。在这里，你可以放松聆听、轻松学习、探索灵感与好奇心。</p>
-
-        <div class="features" aria-hidden="false">
-          <span class="chip">故事聆听</span>
-          <span class="chip">丰富主题</span>
-          <span class="chip">轻松学习</span>
-          <span class="chip">随时随地使用</span>
-        </div>
-
-        <div style="margin-top:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap">
-          <a class="cta" href="http://virtual-sky.online" target="_blank" rel="noopener noreferrer" id="goBtn">进入 Virtual Sky ▸</a>
-          <a class="secondary" href="#info" id="moreBtn">了解更多</a>
-        </div>
-
-        <footer>
-          <div>虚拟天空 导航页</div>
-          <div>安全打开 · 新页面加载</div>
-        </footer>
-      </section>
-
-      <aside class="right" aria-hidden="true">
-        <div class="preview" role="region" aria-label="预览">
-          <div class="planet" title="Virtual Sky">
-            <!-- simple constellation SVG inside planet -->
-            <svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect width="110" height="110" rx="55" fill="url(#g)" />
-              <defs>
-                <radialGradient id="g" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(40 30) scale(120)">
-                  <stop offset="0" stop-color="#9be9ff" stop-opacity="0.24"/>
-                  <stop offset="1" stop-color="#07314a" stop-opacity="0.5"/>
-                </radialGradient>
-              </defs>
-              <g stroke="#cfefff99" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="30" cy="32" r="2.2" fill="#eaffff"/>
-                <circle cx="46" cy="20" r="1.6" fill="#eaffff"/>
-                <circle cx="68" cy="34" r="1.9" fill="#eaffff"/>
-                <circle cx="56" cy="58" r="1.7" fill="#eaffff"/>
-                <circle cx="30" cy="62" r="1.4" fill="#eaffff"/>
-                <path d="M30 32 L46 20 L68 34 L56 58 L30 62" stroke-opacity="0.6" />
-              </g>
-            </svg>
-          </div>
-
-          <div style="position:absolute; bottom:14px; left:18px; right:18px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
-            <div style="font-size:13px; color:#bfeaff; opacity:0.95">功能预览</div>
-            <div style="display:flex; gap:10px; align-items:center">
-              <a class="secondary" href="http://virtual-sky.online" target="_blank" rel="noopener noreferrer">打开站点</a>
-              <a class="secondary" href="#" onclick="copyUrl(event)" title="复制链接">复制链接</a>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </main>
-  </div>
+  <div class="nebula"></div>
 
   <script>
-    // randomly animate shooting stars
-    function rand(min,max){return Math.random()*(max-min)+min}
-    function launchShoot(el){
-      el.style.top = (rand(5,85))+'%'
-      el.style.left = (rand(5,95))+'%'
-      el.style.opacity = 0
-      el.style.animation = 'none'
-      // force reflow
-      void el.offsetWidth
-      el.style.animation = 'shootAnim '+(rand(1.2,2.2))+'s cubic-bezier(.2,.9,.1,1) forwards'
+    // —— 生成星星粒子 ——
+    for(let i=0;i<80;i++){
+      const p=document.createElement('div');
+      p.className='particle';
+      p.style.left=Math.random()*100+'vw';
+      p.style.top=Math.random()*100+'vh';
+      p.style.animationDuration=(5+Math.random()*10)+'s';
+      p.style.opacity=Math.random();
+      document.body.appendChild(p);
     }
-    setInterval(()=>{launchShoot(document.getElementById('shoot1'))}, 4000)
-    setInterval(()=>{launchShoot(document.getElementById('shoot2'))}, 5600)
 
-    // Copy link helper
-    function copyUrl(e){e.preventDefault(); navigator.clipboard?.writeText('http://virtual-sky.online').then(()=>{
-      const old = document.getElementById('goBtn').innerText
-      document.getElementById('goBtn').innerText = '已复制链接'
-      setTimeout(()=>document.getElementById('goBtn').innerText = old, 1600)
-    }).catch(()=>{ alert('无法复制，请手动选择并复制链接： http://virtual-sky.online') })}
-
-    // Accessibility: keyboard focus style for CTA
-    document.getElementById('goBtn').addEventListener('keyup', (e)=>{ if(e.key === 'Enter') window.open('http://virtual-sky.online','_blank') })
+    // —— 生成流星 ——
+    for(let i=0;i<4;i++){
+      const m=document.createElement('div');
+      m.className='meteor';
+      m.style.left=Math.random()*100+'vw';
+      m.style.top=Math.random()*-50+'vh';
+      m.style.animationDelay=(Math.random()*5)+'s';
+      document.body.appendChild(m);
+    }
   </script>
+
+  <div class="card">
+    <h1>欢迎来到虚拟天空</h1>
+    <a href="http://virtual-sky.online" target="_blank" class="btn">进入虚拟天空</a>
+  </div>
+
 </body>
 </html>
